@@ -1,0 +1,29 @@
+.recipes {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 50%;
+    flex-wrap: wrap;
+}
+.recipes-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.recipe img {
+    width: 216px;
+    height: 115.08px;
+    flex-shrink: 0;
+    border-radius: 8px;
+}
+.recipe .recipe-name {
+    color: #141313;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 22px;
+    letter-spacing: -0.4px;
+}
+.try-new {
+    margin-bottom: 24px;
+}

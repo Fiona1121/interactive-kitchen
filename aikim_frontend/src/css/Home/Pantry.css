@@ -1,0 +1,22 @@
+.pantry {
+    padding: 20px;
+    flex: 1 1 50%;
+}
+
+.pantry-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pantry-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+
+input[type="checkbox"] {
+    cursor: pointer;
+}

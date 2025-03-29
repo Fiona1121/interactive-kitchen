@@ -1,0 +1,37 @@
+.achievement-banner {
+    background: url("./../../assets/images/banner.png") center/cover no-repeat;
+    padding: 17px 24px 23px 24px;
+    color: white;
+    border-radius: 12px;
+}
+
+.achievement-title {
+    color: #FBF6F6;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 22px;
+    letter-spacing: -0.4px;
+}
+.achievement-subtitle {
+    margin-top: 20px;
+    color: #F6F6F6;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 274;
+    line-height: 22px; /* 157.143% */
+    letter-spacing: -0.4px;
+}
+
+.achievement-content {
+    margin-top: 4px;
+    color: #FBF6F6;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-size: 23px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: -0.4px;
+}
