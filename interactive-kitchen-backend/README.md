@@ -4,11 +4,9 @@ Welcome to the Interactive Kitchen API! This documentation provides an overview 
 
 For detailed API documentation on each feature, see the corresponding README.md files inside the respective app folders:
 
-`inventory/README.md`
-
-`recipe/README.md`
-
-`receipts/README.md`
+- [`inventory/README.md`](./inventory/README.md)
+- [`recipes/README.md`](./recipes/README.md)
+- [`receipts/README.md`](./receipts/README.md)
 
 ## **Base URL**
 `http://<your-domain>/api/`
