@@ -87,7 +87,7 @@ See full documentation: [`inventory/README.md`](./inventory/README.md)
 
 ---
 
-## 🍽️ Recipe Suggestions (AI-powered)
+## Recipe Suggestions (AI-powered)
 
 Generate personalized recipes based on inventory or selected ingredients.
 
