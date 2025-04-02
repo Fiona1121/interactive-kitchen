@@ -2,6 +2,12 @@
 
 Welcome to the Interactive Kitchen API! This documentation provides an overview of the available endpoints and their usage. All endpoints require authentication unless otherwise specified.
 
+For detailed API documentation on each feature, see the corresponding README.md files inside the respective app folders:
+
+- [`inventory/README.md`](./inventory/README.md)
+- [`recipes/README.md`](./recipes/README.md)
+- [`receipts/README.md`](./receipts/README.md)
+
 ## **Base URL**
 `http://<your-domain>/api/`
 
@@ -59,146 +65,46 @@ Welcome to the Interactive Kitchen API! This documentation provides an overview 
 
 ---
 
-## **Inventory Management**
+## Inventory Management
 
-### **Get All Inventory Items**
-**GET** `/inventory/`
+Manage your pantry items with CRUD functionality.
 
-#### Response:
-```json
-[
-    {
-        "id": 1,
-        "name": "Milk",
-        "quantity": 2,
-        "unit": "liters",
-        "expiration_date": "2025-01-15",
-        "added_by": 1
-    }
-]
-```
+- **GET** `/inventory/` – Get all items
+- **POST** `/inventory/` – Add one or more items
+- **PUT** `/inventory/<id>/` – Update a specific item
+- **DELETE** `/inventory/<id>/` – Delete a specific item
 
-### **Create Inventory Items**
-**POST** `/inventory/`
-
-#### Request:
-```json
-[
-    {
-        "name": "Milk",
-        "quantity": 2,
-        "unit": "liters",
-        "expiration_date": "2025-01-15"
-    },
-    {
-        "name": "Eggs",
-        "quantity": 12,
-        "unit": "pieces",
-        "expiration_date": "2025-01-20"
-    }
-]
-```
-
-#### Response:
-```json
-[
-    {
-        "id": 1,
-        "name": "Milk",
-        "quantity": 2,
-        "unit": "liters",
-        "expiration_date": "2025-01-15",
-        "added_by": 1
-    },
-    {
-        "id": 2,
-        "name": "Eggs",
-        "quantity": 12,
-        "unit": "pieces",
-        "expiration_date": "2025-01-20",
-        "added_by": 1
-    }
-]
-```
-
-### **Update Inventory Item**
-**PUT** `/inventory/<id>/`
-
-#### Request:
-```json
-{
-    "name": "Milk",
-    "quantity": 3,
-    "unit": "liters",
-    "expiration_date": "2025-01-18"
-}
-```
-
-#### Response:
-```json
-{
-    "id": 1,
-    "name": "Milk",
-    "quantity": 3,
-    "unit": "liters",
-    "expiration_date": "2025-01-18",
-    "added_by": 1
-}
-```
-
-### **Delete Inventory Item**
-**DELETE** `/inventory/<id>/`
-
-#### Response:
-```json
-{
-    "message": "Item deleted successfully."
-}
-```
+See full documentation: [`inventory/README.md`](./inventory/README.md)
 
 ---
 
-## **Recipe Suggestions**
+## 🍽️ Recipe Suggestions (AI-powered)
 
-### **Suggest Recipes**
-**POST** `/recipe/suggest/`
+Generate personalized recipes based on inventory or selected ingredients.
 
-#### Request:
+- **POST** `/recipe/suggest/`
+
+Example input:
 ```json
 {
-    "ingredients": [
-        {"name": "Tomato", "quantity": 500, "unit": "g", "expiration_date": "2025-01-13"},
-        {"name": "Cheese", "quantity": 200, "unit": "g", "expiration_date": "2025-02-02"}
-    ], // optional, defaults to full inventory of current user
+    "ingredients": [{"name": "Tomato", "quantity": 500, "unit": "g"}],
     "cuisine": "Italian",
     "spicy_level": "Low",
-    "cooking_time": "30 minutes"
+    "cooking_time": "30"
 }
 ```
+ See full documentation: [`recipes/README.md`](./recipes/README.md)
 
-#### Response:
-```json
-{
-    "user": {
-        "username": "example_user",
-        "email": "user@example.com"
-    },
-    "recipes": [
-        {
-            "recipe": "Cheesy Tomato Pasta",
-            "ingredients": [
-                {"name": "Tomato", "quantity": 500, "unit": "g", "expiration_date": "2025-01-13"},
-                {"name": "Cheese", "quantity": 200, "unit": "g", "expiration_date": "2025-02-02"}
-            ],
-            "cuisine": "Italian",
-            "spicy_level": "Low",
-            "cooking_time": 30,
-            "instructions": "1. Cook pasta. 2. Prepare sauce. 3. Combine and serve."
-        }
-    ]
-}
-```
+---
 
+## Receipt Scanning
+
+Upload a receipt image and automatically populate your inventory.
+
+- **POST** `/receipts/scan/`
+  - Requires `multipart/form-data` with an `image` field
+
+See full documentation: [`receipts/README.md`](./receipts/README.md)
 ---
 
 ## **User Management**
