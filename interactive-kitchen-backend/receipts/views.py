@@ -101,18 +101,18 @@ def scan_receipt(request):
             print(json_data)
             raise e
 
-        added_items = []
-        for item in items:
-            inv_item = InventoryItem.objects.create(
-                name=item["name"],
-                quantity=item["quantity"],
-                unit=item["unit"],
-                expiration_date=datetime.datetime.strptime(item["expiration_date"], "%Y-%m-%d").date() if item["expiration_date"] else None,
-                added_by=user
-            )
-            added_items.append({"id": inv_item.id, "name": inv_item.name})
+        # added_items = []
+        # for item in items:
+        #     inv_item = InventoryItem.objects.create(
+        #         name=item["name"],
+        #         quantity=item["quantity"],
+        #         unit=item["unit"],
+        #         expiration_date=datetime.datetime.strptime(item["expiration_date"], "%Y-%m-%d").date() if item["expiration_date"] else None,
+        #         added_by=user
+        #     )
+        #     added_items.append({"id": inv_item.id, "name": inv_item.name})
 
-        return Response({"added_items": added_items}, status=status.HTTP_201_CREATED)
+        return Response({"items": items}, status=status.HTTP_201_CREATED)
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
