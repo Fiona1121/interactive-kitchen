@@ -59,7 +59,14 @@ MIDDLEWARE = [
 ]
 
 # CORS Settings
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",      # for dev frontend
+    "https://localhost:3000",     # to support HTTPS locally (e.g. camera/iPad)
+    "http://127.0.0.1:3000",
+    "https://127.0.0.1:3000"
+]
 CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'interactive_kitchen.urls'
