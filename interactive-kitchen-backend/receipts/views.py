@@ -20,9 +20,35 @@ openai = OpenAI(api_key=api_key)
 @permission_classes([IsAuthenticated])
 @parser_classes([MultiPartParser, FormParser])
 def scan_receipt(request):
-    """
-    Upload an image of a receipt and extract inventory items from it using OpenAI vision model.
-    """
+    '''
+    Handles the upload of a receipt image, processes it using an OpenAI model to extract grocery items, 
+    and saves the extracted items to the inventory.
+    Args: 
+        request (HttpRequest): The HTTP request object containing the uploaded image file and user information.
+    Returns:
+        Response: 
+            - HTTP 201 Created: If the receipt is successfully processed and items are added to the inventory.
+              Returns a JSON response with the added items.
+            - HTTP 400 Bad Request: If the image file is missing in the request.
+              Returns a JSON response with an error message.
+            - HTTP 500 Internal Server Error: If an unexpected error occurs during processing.
+              Returns a JSON response with the error message.
+    Raises:
+        json.JSONDecodeError: If the extracted JSON data from the OpenAI response cannot be parsed.
+        Exception: For any other unexpected errors during processing.
+    Process:
+        1. Validates that an image file is included in the request.
+        2. Reads and encodes the image file to Base64 format.
+        3. Sends the encoded image to the OpenAI Vision API with a prompt to extract grocery items.
+        4. Parses the JSON response from the OpenAI API to extract item details.
+        5. Saves the extracted items to the inventory database.
+        6. Returns a response with the added items or an appropriate error message.
+    Example cURL:
+        curl -X POST http://127.0.0.1:8000/api/scan-receipt/ \
+        -H "Authorization: Bearer <your_token>" \
+        -H "Content-Type: multipart/form-data" \
+        -F "image=@/path/to/your/receipt.jpg"
+    '''
     if 'image' not in request.FILES:
         return Response({"error": "Image file is required."}, status=status.HTTP_400_BAD_REQUEST)
 
