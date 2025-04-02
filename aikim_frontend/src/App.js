@@ -5,6 +5,8 @@ import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/Home";
 import ScanReceiptPage from "./pages/ScanReceiptPage";
 import ScanConfirmationPage from "./pages/ScanConfirmationPage";
+import RecipePage from "./pages/RecipePage";
+import RecipeDetailPage from "./pages/RecipeDetailPage";
 import "./css/App.css";
 
 // Placeholder components for other routes
@@ -31,6 +33,8 @@ const App = () => {
           <Route path="profile" element={<ProfilePage />} />
           <Route path="/scan-receipt" element={<ScanReceiptPage />} />
           <Route path="/scan-confirmation" element={<ScanConfirmationPage />} />
+          <Route path="/recipe" element={<RecipePage />} />
+          <Route path="/recipe-detail" element={<RecipeDetailPage />} />
         </Route>
       </Routes>
     </Router>

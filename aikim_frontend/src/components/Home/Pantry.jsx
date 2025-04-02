@@ -1,7 +1,67 @@
 // src/components/Home/Pantry.jsx
 import React, { useState, useEffect } from "react";
-import { inventoryService } from "../../services/api";
+import { inventoryService, recipeService } from "../../services/api";
 import { useNavigate } from "react-router-dom";
+
+const MOCKDATA = [
+  {
+    id: 1,
+    name: "Potatoes",
+    quantity: "2",
+    unit: "pc",
+    selected: false,
+    status: "expired",
+  },
+  {
+    id: 2,
+    name: "Zucchini",
+    quantity: "4",
+    unit: "pc",
+    selected: true,
+    status: "expiring",
+    expiringDays: 3,
+  },
+  {
+    id: 3,
+    name: "Quinoa",
+    quantity: "200",
+    unit: "g",
+    status: "expiring",
+    expiringDays: 2,
+  },
+  {
+    id: 4,
+    name: "Salmon fillets",
+    quantity: "2 x 150",
+    unit: "g",
+    selected: false,
+    status: "good",
+  },
+  {
+    id: 5,
+    name: "Potatoes",
+    quantity: "200",
+    unit: "g",
+    selected: true,
+    status: "good",
+  },
+  {
+    id: 6,
+    name: "Chicken",
+    quantity: "500",
+    unit: "g",
+    selected: false,
+    status: "good",
+  },
+  {
+    id: 7,
+    name: "Eggs",
+    quantity: "12",
+    unit: "pc",
+    selected: false,
+    status: "good",
+  },
+];
 
 const PantryItem = ({ item, onToggleSelected }) => {
   const { id, name, quantity, unit, selected, status } = item;
@@ -44,6 +104,7 @@ const Pantry = () => {
   const [pantryItems, setPantryItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updateDate, setUpdateDate] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     // Helper function to determine item status based on expiration date
@@ -76,67 +137,9 @@ const Pantry = () => {
     };
 
     const loadMockData = () => {
-      const mockData = [
-        {
-          id: 1,
-          name: "Potatoes",
-          quantity: "2",
-          unit: "pc",
-          selected: false,
-          status: "expired",
-        },
-        {
-          id: 2,
-          name: "Zucchini",
-          quantity: "4",
-          unit: "pc",
-          selected: true,
-          status: "expiring",
-          expiringDays: 3,
-        },
-        {
-          id: 3,
-          name: "Quinoa",
-          quantity: "200",
-          unit: "g",
-          status: "expiring",
-          expiringDays: 2,
-        },
-        {
-          id: 4,
-          name: "Salmon fillets",
-          quantity: "2 x 150",
-          unit: "g",
-          selected: false,
-          status: "good",
-        },
-        {
-          id: 5,
-          name: "Potatoes",
-          quantity: "200",
-          unit: "g",
-          selected: true,
-          status: "good",
-        },
-        {
-          id: 6,
-          name: "Chicken",
-          quantity: "500",
-          unit: "g",
-          selected: false,
-          status: "good",
-        },
-        {
-          id: 7,
-          name: "Eggs",
-          quantity: "12",
-          unit: "pc",
-          selected: false,
-          status: "good",
-        },
-      ];
-      setPantryItems(mockData);
-      setUpdateDate("2.1.2025");
+      setPantryItems(MOCKDATA);
+      setUpdateDate(new Date().toLocaleDateString());
+      setLoading(false);
     };
 
     const fetchPantryItems = async () => {
@@ -189,6 +192,81 @@ const Pantry = () => {
           item.id === itemId ? { ...item, selected: !selected } : item
         )
       );
+    }
+  };
+
+  const handleGenerateRecipe = async () => {
+    // Get selected items from pantry
+    const selectedItems = pantryItems.filter((item) => item.selected);
+
+    if (selectedItems.length === 0) {
+      // Show an alert or notification that no items are selected
+      alert("Please select at least one item from your pantry");
+      return;
+    }
+
+    // Format items for the API request
+    const ingredients = selectedItems.map((item) => ({
+      id: item.id,
+      name: item.name,
+      quantity: parseFloat(item.quantity) || 0,
+      unit: item.unit,
+      expiration_date: new Date().toISOString().split("T")[0], // Default to today if no date
+      added_by: 1, // Default user ID until auth is implemented
+    }));
+
+    try {
+      setIsGenerating(true);
+
+      // Use your existing suggestRecipes function
+      const recipeData = await recipeService.suggestRecipes({
+        ingredients: ingredients,
+        cuisine: "any",
+        spicy_level: "Medium",
+        cooking_time: 30,
+      });
+
+      // Navigate to the recipe page with the generated recipes
+      navigate("/recipe", { state: { recipeData } });
+    } catch (error) {
+      console.error("Failed to generate recipes:", error);
+      alert("There was an error generating recipes. Please try again.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleMarkAsUsed = async () => {
+    // Get selected items from pantry
+    const selectedItems = pantryItems.filter((item) => item.selected);
+
+    if (selectedItems.length === 0) {
+      // Show an alert or notification that no items are selected
+      alert("Please select at least one item to mark as used");
+      return;
+    }
+
+    try {
+      setLoading(true); // Show loading state
+
+      // Delete each selected item from the inventory
+      for (const item of selectedItems) {
+        await inventoryService.deleteItem(item.id);
+      }
+
+      // Refresh the pantry items
+      const remainingItems = pantryItems.filter((item) => !item.selected);
+      setPantryItems(remainingItems);
+
+      // Show success message
+      alert(
+        `${selectedItems.length} item(s) marked as used and removed from pantry`
+      );
+    } catch (error) {
+      console.error("Failed to mark items as used:", error);
+      alert("There was an error updating your pantry. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -307,11 +385,21 @@ const Pantry = () => {
       </div>
 
       <div className="mt-6 flex space-x-2">
-        <button className="flex-1 bg-blue-100 text-blue-600 py-3 px-4 rounded-full hover:bg-blue-200 transition duration-200 font-medium">
-          Generate Recipe
+        <button
+          onClick={handleGenerateRecipe}
+          disabled={isGenerating}
+          className="flex-1 bg-blue-100 text-blue-600 py-3 px-4 rounded-full hover:bg-blue-200 transition duration-200 font-medium"
+        >
+          {isGenerating ? "Generating..." : "Generate Recipe"}
         </button>
-        <button className="w-1/3 bg-white border border-gray-300 text-gray-700 py-3 px-4 rounded-full hover:bg-gray-50 transition duration-200 font-medium">
-          Have used
+        <button
+          onClick={handleMarkAsUsed}
+          disabled={
+            loading || pantryItems.filter((item) => item.selected).length === 0
+          }
+          className="w-1/3 bg-white border border-gray-300 text-gray-700 py-3 px-4 rounded-full hover:bg-gray-50 transition duration-200 font-medium"
+        >
+          {loading ? "Updating..." : "Have used"}
         </button>
       </div>
     </div>
