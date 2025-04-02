@@ -22,26 +22,97 @@ const ReceiptScanner = () => {
 
   const startCamera = async () => {
     try {
+      // Check if mediaDevices is supported
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error("Camera API is not supported in your browser");
+      }
+
+      // Try to get a list of available devices first (helps with iOS permission flow)
+      try {
+        await navigator.mediaDevices.enumerateDevices();
+      } catch (enumError) {
+        console.warn("Could not enumerate devices:", enumError);
+        // Continue anyway, as some devices don't support enumeration
+      }
+
+      // Configure camera constraints for optimal cross-device compatibility
       const constraints = {
         video: {
           facingMode: "environment", // Use the back camera if available
           width: { ideal: 1280 },
           height: { ideal: 720 },
+          // Add additional constraints for better mobile camera handling
+          aspectRatio: { ideal: 4 / 3 },
+          frameRate: { ideal: 30 },
         },
       };
+
+      // For iOS devices, we need to be more specific sometimes
+      const userAgent = navigator.userAgent;
+      const isiOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+
+      if (isiOS) {
+        console.log("iOS device detected, using specific constraints");
+        // On iOS, sometimes simpler constraints work better
+        constraints.video = {
+          facingMode: "environment",
+          width: { min: 640, ideal: 1280, max: 1920 },
+          height: { min: 480, ideal: 720, max: 1080 },
+        };
+      }
 
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        setIsCameraActive(true);
-        setError(null);
+        videoRef.current.onloadedmetadata = () => {
+          if (videoRef.current) {
+            videoRef.current
+              .play()
+              .then(() => {
+                setIsCameraActive(true);
+                setError(null);
+              })
+              .catch((playError) => {
+                console.error("Error playing video:", playError);
+                setError("Could not play video stream. Please try again.");
+              });
+          }
+        };
       }
     } catch (err) {
       console.error("Error accessing camera:", err);
-      setError(
-        "Could not access the camera. Please check permissions and try again."
-      );
+
+      // Provide more specific error messages based on the error
+      if (
+        err.name === "NotAllowedError" ||
+        err.name === "PermissionDeniedError"
+      ) {
+        setError(
+          "Camera access was denied. Please allow camera access and try again."
+        );
+      } else if (
+        err.name === "NotFoundError" ||
+        err.name === "DevicesNotFoundError"
+      ) {
+        setError(
+          "No camera found on your device, or the camera is already in use."
+        );
+      } else if (
+        err.name === "NotReadableError" ||
+        err.name === "TrackStartError"
+      ) {
+        setError("Your camera is already in use by another application.");
+      } else if (err.name === "OverconstrainedError") {
+        setError(
+          "The requested camera settings are not supported by your device."
+        );
+      } else {
+        setError(
+          "Could not access the camera: " + (err.message || "Unknown error")
+        );
+      }
+
       setIsCameraActive(false);
     }
   };
@@ -104,7 +175,7 @@ const ReceiptScanner = () => {
   };
 
   return (
-    <div className="receipt-scanner bg-white rounded-lg h-full flex flex-col">
+    <div className="bg-white rounded-lg h-full flex flex-col">
       <div className="p-4 border-b border-gray-200">
         <h2 className="text-xl font-bold">Scan Receipt</h2>
         <p className="text-sm text-gray-500">
@@ -112,13 +183,13 @@ const ReceiptScanner = () => {
         </p>
       </div>
 
-      <div className="relative flex-grow flex items-center justify-center bg-gray-900">
+      <div className="relative flex-grow flex items-center justify-center bg-gray-900 m-4">
         {error ? (
           <div className="text-center p-6">
             <div className="text-red-500 mb-4">{error}</div>
             <button
               onClick={handleRetry}
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
             >
               Retry
             </button>
@@ -129,13 +200,21 @@ const ReceiptScanner = () => {
               ref={videoRef}
               autoPlay
               playsInline
+              muted
               className="absolute w-full h-full object-cover"
               style={{ display: isCameraActive ? "block" : "none" }}
             />
 
+            {!isCameraActive && !error && (
+              <div className="flex flex-col items-center justify-center text-white">
+                <div className="w-10 h-10 border-2 border-white border-t-transparent rounded-full animate-spin mb-3"></div>
+                <p>Accessing camera...</p>
+              </div>
+            )}
+
             {/* Blue receipt outline guide */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="border-4 border-blue-500 w-4/5 h-3/5 rounded-md"></div>
+              <div className="border-4 border-blue-500 w-2/5 h-4/5 rounded-md"></div>
             </div>
 
             <canvas
@@ -146,10 +225,10 @@ const ReceiptScanner = () => {
         )}
       </div>
 
-      <div className="p-4 flex justify-between">
+      <div className="p-4 flex justify-between items-center">
         <button
           onClick={() => navigate(-1)}
-          className="w-12 h-12 rounded-full bg-white border border-gray-300 flex items-center justify-center"
+          className="w-12 h-12 rounded-full bg-white border border-gray-300 flex items-center justify-center hover:bg-gray-100"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -169,33 +248,14 @@ const ReceiptScanner = () => {
         <button
           onClick={captureReceipt}
           disabled={!isCameraActive || isScanning}
-          className={`w-16 h-16 rounded-full flex items-center justify-center ${
+          className={`w-16 h-16 rounded-full flex items-center justify-center transition-colors ${
             isCameraActive && !isScanning
-              ? "bg-blue-500 text-white"
-              : "bg-gray-300 text-gray-500"
+              ? "bg-blue-500 text-white hover:bg-blue-600"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
           }`}
         >
           {isScanning ? (
-            <svg
-              className="animate-spin h-8 w-8 text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
+            <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
           ) : (
             <svg
               xmlns="http://www.w3.org/2000/svg"

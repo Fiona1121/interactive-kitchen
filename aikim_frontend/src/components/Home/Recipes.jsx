@@ -13,7 +13,7 @@ const RecipeCard = ({ recipe }) => {
   return (
     <div className="recipe-card">
       <div
-        className="h-28 bg-cover bg-center rounded-lg overflow-hidden cursor-pointer"
+        className="bg-cover bg-center rounded-lg overflow-hidden cursor-pointer aspect-video"
         style={{
           backgroundImage: `url(${
             recipe.imageUrl || getImageUrl(recipe.recipe || recipe.title)

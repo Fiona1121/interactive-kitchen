@@ -8,17 +8,18 @@
   flex-direction: column;
 }
 .sidebar .sidebarMenu {
-  padding: 40px 0 0 50px;
+  padding: 40px 0 0 0;
 }
 .sidebar .brand {
   height: 100px;
   margin-bottom: 20px;
+  margin: 0 auto;
 }
 .sidebar .menu {
   display: flex;
   align-items: center;
   gap: 21px;
-  padding: 12px 0;
+  padding: 12px 40px;
   cursor: pointer;
   &.active {
     border-right: 4px solid #000000;
@@ -43,6 +44,6 @@
 }
 .sidebar .settings {
   margin-top: auto;
-  padding: 40px 0 20px 50px;
+  padding-bottom: 20px;
   text-align: center;
 }
