@@ -13,6 +13,28 @@ def suggest_recipe(request):
     """
     API endpoint for generating recipe suggestions based on user input.
     Requires user authentication.
+
+    The endpoint accepts the following optional fields in the request body:
+    - ingredients: A list of ingredients to use for the recipe. If not provided, the user's inventory is used.
+    - cuisine: The preferred cuisine type (default is 'any').
+    - spicy_level: The desired spice level (default is 'medium').
+    - cooking_time: The maximum cooking time (default is 'any').
+
+    Returns:
+    - A JSON response containing the user's details and the generated recipe.
+
+    Example cURL request:
+    ```bash
+    curl -X POST http://<your-domain>/api/suggest-recipe/ \
+    -H "Authorization: Bearer <your-access-token>" \
+    -H "Content-Type: application/json" \
+    -d '{
+        "ingredients": [{"name": "chicken", "unit": "kg", "quantity": 1}],
+        "cuisine": "Italian",
+        "spicy_level": "low",
+        "cooking_time": "30"
+    }'
+    ```
     """
     # # Validate API Key
     if not gpt_utils.OPENAI_API_KEY:
