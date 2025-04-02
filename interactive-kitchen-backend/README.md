@@ -9,6 +9,7 @@ For detailed API documentation on each feature, see the corresponding README.md 
 - [`receipts/README.md`](./receipts/README.md)
 
 ## **Base URL**
+
 `http://<your-domain>/api/`
 
 ---
@@ -16,50 +17,58 @@ For detailed API documentation on each feature, see the corresponding README.md 
 ## **Authentication**
 
 ### **Register**
+
 **POST** `/auth/register/`
 
 #### Request:
+
 ```json
 {
-    "username": "example_user",
-    "email": "user@example.com",
-    "password": "secure_password",
-    "date_of_birth": "2000-01-01"
+  "username": "example_user",
+  "email": "user@example.com",
+  "password": "secure_password",
+  "date_of_birth": "2000-01-01"
 }
 ```
 
 #### Response:
+
 ```json
 {
-    "token": "your_auth_token"
+  "token": "your_auth_token"
 }
 ```
 
 ### **Login**
+
 **POST** `/auth/login/`
 
 #### Request:
+
 ```json
 {
-    "username": "example_user",
-    "password": "secure_password"
+  "username": "example_user",
+  "password": "secure_password"
 }
 ```
 
 #### Response:
+
 ```json
 {
-    "token": "your_auth_token"
+  "token": "your_auth_token"
 }
 ```
 
 ### **Logout**
+
 **POST** `/auth/logout/`
 
 #### Response:
+
 ```json
 {
-    "message": "Logged out successfully"
+  "message": "Logged out successfully"
 }
 ```
 
@@ -78,22 +87,24 @@ See full documentation: [`inventory/README.md`](./inventory/README.md)
 
 ---
 
-## Recipe Suggestions (AI-powered)
+## 🍽️ Recipe Suggestions (AI-powered)
 
 Generate personalized recipes based on inventory or selected ingredients.
 
 - **POST** `/recipe/suggest/`
 
 Example input:
+
 ```json
 {
-    "ingredients": [{"name": "Tomato", "quantity": 500, "unit": "g"}],
-    "cuisine": "Italian",
-    "spicy_level": "Low",
-    "cooking_time": "30"
+  "ingredients": [{ "name": "Tomato", "quantity": 500, "unit": "g" }],
+  "cuisine": "Italian",
+  "spicy_level": "Low",
+  "cooking_time": "30"
 }
 ```
- See full documentation: [`recipes/README.md`](./recipes/README.md)
+
+See full documentation: [`recipes/README.md`](./recipes/README.md)
 
 ---
 
@@ -111,24 +122,28 @@ See full documentation: [`receipts/README.md`](./receipts/README.md)
 ## **User Management**
 
 ### **Get All Users**
+
 **GET** `/users/`
 
 #### Response:
+
 ```json
 [
-    {
-        "id": 1,
-        "username": "example_user",
-        "email": "user@example.com",
-        "date_of_birth": "2000-01-01"
-    }
+  {
+    "id": 1,
+    "username": "example_user",
+    "email": "user@example.com",
+    "date_of_birth": "2000-01-01"
+  }
 ]
 ```
 
 ---
 
 ## **Notes**
+
 1. **Authentication**: Most endpoints require an authentication token in the `Authorization` header:
+
    ```
    Authorization: Token <your_auth_token>
    ```
@@ -139,4 +154,3 @@ See full documentation: [`receipts/README.md`](./receipts/README.md)
    - Server issues return a `500 Internal Server Error`.
 
 Feel free to reach out for any clarifications or support!
-
