@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'inventory',       # Add inventory app
     'users',           # Add users app
     'recipes',         # Add recipes app
+    'receipts',        # Add receipts app
+
 ]
 
 MIDDLEWARE = [

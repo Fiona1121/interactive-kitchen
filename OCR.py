@@ -18,7 +18,8 @@ def extract_groceries(text):
 def main():
     curr_path = os.getcwd()
     print(curr_path)
-    text = pytesseract.image_to_string(curr_path+"/reciept2.jpeg", lang='eng', config='--psm 6 --oem 1')
+    pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe'
+    text = pytesseract.image_to_string(curr_path+"/reciept1.jpeg", lang='eng', config='--psm 6 --oem 1')
     print(type(text))
     groceries = extract_groceries(text)
     
