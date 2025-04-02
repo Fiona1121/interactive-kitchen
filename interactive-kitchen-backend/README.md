@@ -78,7 +78,7 @@ See full documentation: [`inventory/README.md`](./inventory/README.md)
 
 ---
 
-## 🍽️ Recipe Suggestions (AI-powered)
+## Recipe Suggestions (AI-powered)
 
 Generate personalized recipes based on inventory or selected ingredients.
 
@@ -105,6 +105,7 @@ Upload a receipt image and automatically populate your inventory.
   - Requires `multipart/form-data` with an `image` field
 
 See full documentation: [`receipts/README.md`](./receipts/README.md)
+
 ---
 
 ## **User Management**
