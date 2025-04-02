@@ -83,7 +83,12 @@ const RecipeDetailPage = () => {
 
             if (newQuantity <= 0) {
               // Delete the item if quantity is zero or negative
-              await inventoryService.deleteItem(inventoryItem.id);
+              const result = await inventoryService.deleteItem(
+                inventoryItem.id
+              );
+              if (result && result.success) {
+                console.log(`Item ${inventoryItem.id} successfully deleted`);
+              }
             } else {
               // Update with new quantity
               await inventoryService.updateItem(inventoryItem.id, {

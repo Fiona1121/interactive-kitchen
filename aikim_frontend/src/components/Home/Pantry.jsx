@@ -251,7 +251,10 @@ const Pantry = () => {
 
       // Delete each selected item from the inventory
       for (const item of selectedItems) {
-        await inventoryService.deleteItem(item.id);
+        const result = await inventoryService.deleteItem(item.id);
+        if (result && result.success) {
+          console.log(`Item ${item.id} successfully deleted`);
+        }
       }
 
       // Refresh the pantry items
