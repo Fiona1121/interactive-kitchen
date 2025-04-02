@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
 from .models import InventoryItem
 from .serializers import InventoryItemSerializer
 from rest_framework.response import Response
@@ -62,4 +63,9 @@ class InventoryViewSet(viewsets.ModelViewSet):
         instance.delete()
         return Response({"message": "Item deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
     
+    @action(detail=False, methods=['delete'], url_path='delete-all')
+    def destroy_all(self, request):
+        # Delete all inventory items for the authenticated user
+        InventoryItem.objects.filter(added_by=request.user.id).delete()
+        return Response({"message": "All items deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
     

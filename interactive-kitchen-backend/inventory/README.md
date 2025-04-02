@@ -102,6 +102,19 @@ curl -X DELETE http://localhost:3000/api/inventory/123
 
 ---
 
+### 6. Delete all Inventory Items
+**DELETE** `/delete-all/`
+
+**Description:** Remove an inventory item by its ID.
+
+**Example Request:**
+```bash
+curl -X DELETE http://localhost:3000/api/inventory/delete-all/
+-H "Authorization: Token <your_token>"
+```
+
+---
+
 ## Notes
 - Replace `123` with the actual ID of the inventory item.
 - Ensure the server is running locally on port `3000` or update the base URL accordingly.
