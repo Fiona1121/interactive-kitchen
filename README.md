@@ -55,8 +55,6 @@ Pillow
 Create a `.env` file inside the same folder (`interactive-kitchen-backend/`) with:
 
 ```env
-DEBUG=True
-SECRET_KEY=your_django_secret_key
 OPENAI_API_KEY=your_openai_api_key
 ```
 
