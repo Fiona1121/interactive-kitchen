@@ -46,31 +46,6 @@ const Pantry = () => {
   const [updateDate, setUpdateDate] = useState("");
 
   useEffect(() => {
-    const fetchPantryItems = async () => {
-      try {
-        setLoading(true);
-        const items = await inventoryService.getAllItems();
-        // Transform the API response to match our component's expected format
-        const transformedItems = items.map((item) => ({
-          id: item.id,
-          name: item.name,
-          quantity: item.quantity,
-          unit: item.unit,
-          selected: false,
-          status: getItemStatus(item.expiration_date),
-          expiringDays: item.expiration_date
-            ? getDaysUntilExpiry(item.expiration_date)
-            : null,
-        }));
-        setPantryItems(transformedItems);
-        setUpdateDate(new Date().toLocaleDateString());
-      } catch (error) {
-        console.error("Failed to fetch pantry items:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     // Helper function to determine item status based on expiration date
     const getItemStatus = (expirationDate) => {
       if (!expirationDate) return "good";
@@ -100,76 +75,98 @@ const Pantry = () => {
       return Math.max(0, Math.ceil((expiry - today) / (1000 * 60 * 60 * 24)));
     };
 
-    // Fetch real data or use mock data for development
-    if (process.env.NODE_ENV === "development") {
-      // Mock data for development
-      setTimeout(() => {
-        const mockData = [
-          {
-            id: 1,
-            name: "Potatoes",
-            quantity: "2",
-            unit: "pc",
-            selected: false,
-            status: "expired",
-          },
-          {
-            id: 2,
-            name: "Zucchini",
-            quantity: "4",
-            unit: "pc",
-            selected: true,
-            status: "expiring",
-            expiringDays: 3,
-          },
-          {
-            id: 3,
-            name: "Quinoa",
-            quantity: "200",
-            unit: "g",
-            status: "expiring",
-            expiringDays: 2,
-          },
-          {
-            id: 4,
-            name: "Salmon fillets",
-            quantity: "2 x 150",
-            unit: "g",
-            selected: false,
-            status: "good",
-          },
-          {
-            id: 5,
-            name: "Potatoes",
-            quantity: "200",
-            unit: "g",
-            selected: true,
-            status: "good",
-          },
-          {
-            id: 6,
-            name: "Chicken",
-            quantity: "500",
-            unit: "g",
-            selected: false,
-            status: "good",
-          },
-          {
-            id: 7,
-            name: "Eggs",
-            quantity: "12",
-            unit: "pc",
-            selected: false,
-            status: "good",
-          },
-        ];
-        setPantryItems(mockData);
-        setUpdateDate("2.1.2025");
+    const loadMockData = () => {
+      const mockData = [
+        {
+          id: 1,
+          name: "Potatoes",
+          quantity: "2",
+          unit: "pc",
+          selected: false,
+          status: "expired",
+        },
+        {
+          id: 2,
+          name: "Zucchini",
+          quantity: "4",
+          unit: "pc",
+          selected: true,
+          status: "expiring",
+          expiringDays: 3,
+        },
+        {
+          id: 3,
+          name: "Quinoa",
+          quantity: "200",
+          unit: "g",
+          status: "expiring",
+          expiringDays: 2,
+        },
+        {
+          id: 4,
+          name: "Salmon fillets",
+          quantity: "2 x 150",
+          unit: "g",
+          selected: false,
+          status: "good",
+        },
+        {
+          id: 5,
+          name: "Potatoes",
+          quantity: "200",
+          unit: "g",
+          selected: true,
+          status: "good",
+        },
+        {
+          id: 6,
+          name: "Chicken",
+          quantity: "500",
+          unit: "g",
+          selected: false,
+          status: "good",
+        },
+        {
+          id: 7,
+          name: "Eggs",
+          quantity: "12",
+          unit: "pc",
+          selected: false,
+          status: "good",
+        },
+      ];
+      setPantryItems(mockData);
+      setUpdateDate("2.1.2025");
+    };
+
+    const fetchPantryItems = async () => {
+      try {
+        setLoading(true);
+        const items = await inventoryService.getAllItems();
+        // Transform the API response to match our component's expected format
+        const transformedItems = items.map((item) => ({
+          id: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          unit: item.unit,
+          selected: false,
+          status: getItemStatus(item.expiration_date),
+          expiringDays: item.expiration_date
+            ? getDaysUntilExpiry(item.expiration_date)
+            : null,
+        }));
+        setPantryItems(transformedItems);
+        setUpdateDate(new Date().toLocaleDateString());
+      } catch (error) {
+        console.error("Failed to fetch pantry items:", error);
+        // If fetch fails, use mock data as fallback
+        loadMockData();
+      } finally {
         setLoading(false);
-      }, 300);
-    } else {
-      fetchPantryItems();
-    }
+      }
+    };
+
+    fetchPantryItems();
   }, []);
 
   const handleToggleSelected = async (itemId, selected) => {

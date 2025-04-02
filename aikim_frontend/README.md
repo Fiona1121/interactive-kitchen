@@ -15,6 +15,17 @@ This guide will walk you through setting up the Aikim Kitchen Assistant frontend
    npm install
    ```
 
+## Environment Setup
+
+### Environment Variables
+
+The application requires specific environment variables for API authentication and configuration. Create a .env file in the root directory:
+
+```bash
+# Authentication (temporary development token)
+REACT_APP_AUTH_TOKEN=your_auth_token_here
+```
+
 ## Running the Development Server
 
 ### Standard Development Mode
