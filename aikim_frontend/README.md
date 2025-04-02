@@ -1,70 +1,114 @@
-# Getting Started with Create React App
+# Aikim Frontend - Setup Guide
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This guide will walk you through setting up the Aikim Kitchen Assistant frontend project for local development.
 
-## Available Scripts
+## Installation
 
-In the project directory, you can run:
+1. Go to the frontend directory:
 
-### `npm start`
+   ```bash
+   cd aikim_frontend
+   ```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Environment Setup
 
-### `npm test`
+### Environment Variables
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The application requires specific environment variables for API authentication and configuration. Create a .env file in the root directory:
 
-### `npm run build`
+```bash
+# Authentication (temporary development token)
+REACT_APP_AUTH_TOKEN=your_auth_token_here
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Running the Development Server
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Standard Development Mode
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Start the development server:
 
-### `npm run eject`
+```bash
+npm start
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+This will run the app in development mode at [http://localhost:3000](http://localhost:3000).
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### HTTPS Development Mode (for camera access)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+For features that require camera access (like receipt scanning), you'll need to run the app in HTTPS mode:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+1. Generate SSL certificates (one-time setup):
 
-## Learn More
+   ```bash
+   # Install mkcert if you don't have it
+   npm install -g mkcert
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+   # Generate certificates
+   mkcert create-ca
+   mkcert create-cert
+   ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+2. Start the server with HTTPS:
 
-### Code Splitting
+   ```bash
+   npm run https
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+3. Access the app at [https://localhost:3000](https://localhost:3000)
 
-### Analyzing the Bundle Size
+### Testing on Mobile Devices
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+To test on a mobile device:
 
-### Making a Progressive Web App
+1. Start the server with host options:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+   ```bash
+   # For HTTP (no camera features)
+   npm start -- --host 0.0.0.0
 
-### Advanced Configuration
+   # For HTTPS (with camera features)
+   npm run https -- --host 0.0.0.0
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+2. Find your computer's IP address:
 
-### Deployment
+   ```bash
+   # On Windows
+   ipconfig
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+   # On Mac/Linux
+   ifconfig | grep "inet "
+   ```
 
-### `npm run build` fails to minify
+3. On your mobile device, connect to the same WiFi network and access:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+   ```
+   # For HTTP
+   http://YOUR_COMPUTER_IP:3000
+
+   # For HTTPS
+   https://YOUR_COMPUTER_IP:3000
+   ```
+
+## Building for Production
+
+Create a production build:
+
+```bash
+npm run build
+```
+
+The optimized files will be in the `build` folder.
+
+## Troubleshooting
+
+### Camera Access Issues
+
+- Camera access requires HTTPS on most browsers
+- When testing on mobile, ensure you accept any certificate warnings
+- For iOS, Safari works best for camera access
