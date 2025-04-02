@@ -46,9 +46,9 @@ curl -X POST http://127.0.0.1:8000/api/receipts/scan_receipt/ \
 ### Success (201 Created)
 ```json
 {
-  "added_items": [
-    {"id": 101, "name": "Milk"},
-    {"id": 102, "name": "Eggs"}
+  "items":[
+    {"name":"Banana Cavendish","quantity":0.442,"unit":"kg", "expiration_date":"2025-06-15"},
+    {"name":"Potatoes Brushed","quantity":1.328,"unit":"kg", "expiration_date":"2025-07-01"}
   ]
 }
 ```
@@ -78,8 +78,8 @@ curl -X POST http://127.0.0.1:8000/api/receipts/scan_receipt/ \
    - `quantity`
    - `unit`
    - `expiration_date` (uses a fallback if blank)
-5. Saves the items in the user's inventory.
-6. Returns a JSON response with the saved items.
+~~5. Saves the items in the user's inventory.~~
+6. Returns a JSON response with the detected items.
 
 ---
 
