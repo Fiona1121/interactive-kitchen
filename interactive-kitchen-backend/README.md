@@ -105,6 +105,7 @@ Upload a receipt image and automatically populate your inventory.
   - Requires `multipart/form-data` with an `image` field
 
 See full documentation: [`receipts/README.md`](./receipts/README.md)
+
 ---
 
 ## **User Management**
