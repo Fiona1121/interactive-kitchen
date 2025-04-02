@@ -1,6 +1,13 @@
 .idea
 node_modules
+
+# certificates
 *.crt
 *.key
 *.pem
 *.srl
+
+# local env files
+.env
+*.env
+*.env.*
