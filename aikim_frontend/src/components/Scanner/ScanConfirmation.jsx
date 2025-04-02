@@ -17,7 +17,7 @@ const ScanConfirmation = () => {
   // Calculate total spent based on some dummy prices
   useState(() => {
     // Simulate a total based on scanned items
-    const randomTotal = Math.floor(Math.random() * 30) + 10;
+    const randomTotal = 24.2;
     setCurrentTotal(randomTotal.toFixed(2));
   }, []);
 
@@ -143,81 +143,78 @@ const ScanConfirmation = () => {
 
           {/* Scanned items */}
           <div className="md:col-span-2">
-            <h3 className="font-medium text-lg mb-2">Scanned Items</h3>
-            <div className="space-y-3">
+            <h3 className="font-bold text-lg mb-2">Scanned Items</h3>
+            <div className="grid grid-cols-4 gap-4">
               {selectedItems.map((item, index) => (
                 <div
                   key={index}
-                  className={`flex items-center p-3 rounded-lg border ${
-                    item.selected
-                      ? "border-blue-200 bg-blue-50"
-                      : "border-gray-200"
-                  }`}
+                  className={`flex flex-col items-center justify-center gap-12 p-2 py-6 h-40 rounded-lg border border-gray-200`}
                 >
-                  <div className="flex-grow">
-                    <div className="font-medium">{item.name}</div>
-                    <div className="flex items-center mt-1">
-                      <button
-                        onClick={() =>
-                          handleQuantityChange(
-                            index,
-                            Math.max(0.1, item.quantity - 0.1)
-                          )
-                        }
-                        className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M20 12H4"
-                          />
-                        </svg>
-                      </button>
-
-                      <span className="mx-2 min-w-[60px] text-center">
-                        {item.quantity} {item.unit}
-                      </span>
-
-                      <button
-                        onClick={() =>
-                          handleQuantityChange(index, item.quantity + 0.1)
-                        }
-                        className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 4v16m8-8H4"
-                          />
-                        </svg>
-                      </button>
-                    </div>
+                  <div className="font-bold capitalize">
+                    {item.name.toLowerCase()}
                   </div>
+                  <div className="flex items-center mt-1">
+                    <button
+                      onClick={() =>
+                        handleQuantityChange(
+                          index,
+                          item.unit === "kg"
+                            ? Math.max(0.1, item.quantity - 0.1)
+                            : Math.max(1.0, item.quantity - 1)
+                        )
+                      }
+                      className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M20 12H4"
+                        />
+                      </svg>
+                    </button>
 
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={item.selected}
-                      onChange={() => handleItemToggle(index)}
-                      className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-                    />
-                  </label>
+                    <span className="mx-2 min-w-[60px] text-center">
+                      {item.quantity.toFixed(1) === "0.0"
+                        ? "0.1"
+                        : item.quantity.toFixed(1)}{" "}
+                      {item.unit}
+                    </span>
+
+                    <button
+                      onClick={() =>
+                        handleQuantityChange(
+                          index,
+                          item.unit === "kg"
+                            ? item.quantity + 0.1
+                            : item.quantity + 1.0
+                        )
+                      }
+                      className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 4v16m8-8H4"
+                        />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

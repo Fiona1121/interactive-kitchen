@@ -149,12 +149,15 @@ const ReceiptScanner = () => {
     setTimeout(() => {
       // For demo purposes, we'll use dummy data
       const scannedItems = [
-        { name: "Fresh garlic", quantity: 1.2, unit: "kg" },
-        { name: "Cucumbers", quantity: 1, unit: "pc" },
-        { name: "Beetroot", quantity: 1, unit: "pc" },
-        { name: "Shrimp", quantity: 400, unit: "g" },
-        { name: "Tomato", quantity: 3, unit: "pc" },
-        { name: "Lemon", quantity: 2, unit: "pc" },
+        { name: "ZUCHINNI GREEN", quantity: 0.8, unit: "kg" },
+        { name: "BANANA CAVENDISH", quantity: 0.4, unit: "kg" },
+        { name: "POTATOES BRUSHED", quantity: 1.3, unit: "kg" },
+        { name: "BROCCOLI", quantity: 0.8, unit: "kg" },
+        { name: "BRUSSEL SPROUTS", quantity: 0.3, unit: "kg" },
+        { name: "GRAPES GREEN", quantity: 1.2, unit: "kg" },
+        { name: "PEAS SNOW", quantity: 0.2, unit: "kg" },
+        { name: "TOMATOES GRAPE", quantity: 1, unit: "pc" },
+        { name: "LETTUCE ICEBERG", quantity: 1, unit: "pc" },
       ];
 
       setIsScanning(false);
