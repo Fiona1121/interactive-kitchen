@@ -44,4 +44,5 @@ urlpatterns = [
     path('api/auth/logout/', LogoutView.as_view(), name='logout'),
     path('api/auth/', include('rest_framework.urls')),
     path('api/recipe/', include('recipes.urls')),  # Include recipe-specific URLs
+    path('api/receipts/', include('receipts.urls')),
 ]
