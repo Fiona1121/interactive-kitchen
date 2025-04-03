@@ -106,7 +106,7 @@ export const recipeService = {
   suggestRecipes: async (params = {}) => {
     try {
       const response = await api.post("/recipe/suggest/", params);
-      return { success: true };
+      return response.data;
     } catch (error) {
       console.error("Error fetching recipe suggestions:", error);
       throw error;
