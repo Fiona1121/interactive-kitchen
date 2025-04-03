@@ -370,7 +370,7 @@ const Pantry = () => {
                 const days = item.expiringDays || 0;
                 return Math.min(min, days);
               }, Infinity)}
-              {"+ "}
+              {" "}
               Days
             </div>
             {groupedItems.expiring.map((item) => (
