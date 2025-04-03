@@ -6,6 +6,7 @@ from .serializers import InventoryItemSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from utils.request_utils import set_request_data_mutable
+from datetime import datetime, timedelta
 
 class InventoryViewSet(viewsets.ModelViewSet):
     """
@@ -69,3 +70,35 @@ class InventoryViewSet(viewsets.ModelViewSet):
         InventoryItem.objects.filter(added_by=request.user.id).delete()
         return Response({"message": "All items deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
     
+    @action(detail=False, methods=['post'], url_path='reset')
+    def reset_inventory(self, request):
+        # Clear all inventory items for the authenticated user
+        InventoryItem.objects.filter(added_by=request.user.id).delete()
+
+        # Predefined ingredients to add with unit, quantity, and expiry date
+        ingredients = [
+            {"name": "Eggs", "unit": "pcs", "quantity": 12},
+            {"name": "Chicken", "unit": "kg", "quantity": 1},
+            {"name": "White Rice", "unit": "kg", "quantity": 2},
+            {"name": "Canned Tomatoes", "unit": "pcs", "quantity": 6},
+            {"name": "Onions", "unit": "pcs", "quantity": 5},
+            {"name": "Olive Oil", "unit": "ml", "quantity": 500},
+            {"name": "Garlic", "unit": "pcs", "quantity": 3},
+            {"name": "Banana", "unit": "pcs", "quantity": 6},
+            {"name": "Orange", "unit": "pcs", "quantity": 4},
+        ]
+
+        # Calculate expiry date as 10 days from today
+        expiry_date = datetime.now().date() + timedelta(days=10)
+
+        # Add the predefined ingredients to the user's inventory
+        for ingredient in ingredients:
+            InventoryItem.objects.create(
+            name=ingredient["name"],
+            unit=ingredient["unit"],
+            quantity=ingredient["quantity"],
+            expiration_date=expiry_date,
+            added_by=request.user
+            )
+
+        return Response({"message": "Inventory reset successfully with predefined ingredients."}, status=status.HTTP_200_OK)

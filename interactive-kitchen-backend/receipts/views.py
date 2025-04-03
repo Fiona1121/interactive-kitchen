@@ -74,9 +74,10 @@ def scan_receipt(request):
                         {"type": "text", 
                          "text": 
                          ''' 
-                         Extract grocery items in this image. Respond ONLY with a valid JSON array. Do NOT include any explanations, descriptions, markdown, or text outside the JSON. Return the response exactly in this format:
+                         Extract grocery items in this image. select sensibly, 3 items that would expire within next 3 days. 2 items that would expire within next 7 days and remaining items that would expire after more than 7 days.
+                         Respond ONLY with a valid JSON array. Do NOT include any explanations, descriptions, markdown, or text outside the JSON. Return the response exactly in this format:
                             [
-                            {"name": "<item_name - cleaned name>", "quantity": <quantity>, "unit": "<unit>", "expiration_date": "<YYYY-MM-DD - assume an expiration date if not given>"}
+                            {"name": "<item_name - cleaned name>", "quantity": <quantity>, "unit": "<unit>", "expiration_date": "<YYYY-MM-DD - assume an expiration date starting 2025-04-03>"}
                             ]
                         '''},
                         {"type": "image_url", "image_url": {"url": f"data:{mime_type};base64,{base64_image}"}}
