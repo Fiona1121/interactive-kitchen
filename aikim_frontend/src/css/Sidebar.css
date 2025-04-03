@@ -28,14 +28,14 @@
 .sidebar .menu {
   &.active {
     .menuItem {
-      font-weight: 700;
+      font-weight: 900;
     }
   }
 
   .menuItem {
     color: #000;
     font-feature-settings: "liga" off, "clig" off;
-    font-size: 20px;
+    font-size: 18px;
     font-style: normal;
     font-weight: 400;
     line-height: 22px;

@@ -8,13 +8,13 @@ import ScanConfirmationPage from "./pages/ScanConfirmationPage";
 import RecipePage from "./pages/RecipePage";
 import RecipeDetailPage from "./pages/RecipeDetailPage";
 import "./css/App.css";
+import PantryPage from "./pages/PantryPage";
+import ShopPage from "./pages/ShopPage";
+import InspirePage from "./pages/InspiredPage";
+import PreferencePage from "./pages/PreferencePage";
+import SummaryPage from "./pages/SummaryPage";
 
 // Placeholder components for other routes
-const PantryPage = () => <div>Pantry Page</div>;
-const ShopPage = () => <div>Shop Page</div>;
-const PreferencePage = () => <div>Preference Page</div>;
-const InspirePage = () => <div>Get Inspired Page</div>;
-const SummaryPage = () => <div>Aikim Summary Page</div>;
 const SettingsPage = () => <div>Settings Page</div>;
 const ProfilePage = () => <div>Profile Page</div>;
 
