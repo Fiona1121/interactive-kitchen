@@ -114,6 +114,31 @@ curl -X DELETE http://localhost:3000/api/inventory/delete-all/
 ```
 
 ---
+"""
+### 7. Reset Inventory
+**POST** `/reset/`
+
+**Description:** Reset the inventory for the authenticated user by deleting all existing items and adding a predefined list of ingredients with default quantities, units, and expiration dates.
+
+**Example Request:**
+```bash
+curl -X POST http://localhost:3000/api/inventory/reset/ \
+-H "Authorization: Token <your_token>"
+```
+
+**Example Response:**
+```json
+{
+    "message": "Inventory reset successfully with predefined ingredients."
+}
+```
+
+**Notes:**
+- This endpoint provides a fresh start for the user's inventory with default ingredients such as Eggs, Chicken, White Rice, and Canned Tomatoes.
+- Expiration dates for the predefined ingredients are set to 10 days from the current date.
+- No request parameters are required.
+
+---
 
 ## Notes
 - Replace `123` with the actual ID of the inventory item.
