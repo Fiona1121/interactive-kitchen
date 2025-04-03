@@ -24,6 +24,8 @@ The application requires specific environment variables for API authentication a
 ```bash
 # Authentication (temporary development token)
 REACT_APP_AUTH_TOKEN=your_auth_token_here
+# API URL
+REACT_APP_API_URL=backend_url_here
 ```
 
 ## Running the Development Server
