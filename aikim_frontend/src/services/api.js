@@ -99,6 +99,27 @@ export const inventoryService = {
       throw error;
     }
   },
+
+  deleteAllItems: async () => {
+    try {
+      const response = await api.delete("/inventory/");
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting all inventory items:", error);
+      throw error;
+    }
+  },
+
+  resetToDefault: async () => {
+    try {
+      // This endpoint would need to be implemented on your backend
+      const response = await api.post("/inventory/reset/");
+      return response.data;
+    } catch (error) {
+      console.error("Error resetting inventory:", error);
+      throw error;
+    }
+  },
 };
 
 // Recipe related API calls
