@@ -8,7 +8,7 @@ const Home = () => {
   return (
     <div className="home-page mx-auto flex flex-col p-4 h-full">
       <AchievementBanner />
-      <div className="flex flex-col md:flex-row gap-6 flex-1">
+      <div className="flex flex-col md:flex-row gap-6 flex-1 max-h-[calc(100vh-200px)] overflow-hidden">
         <div className="w-full md:w-1/2">
           <Pantry />
         </div>

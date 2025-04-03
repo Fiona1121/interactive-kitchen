@@ -1,6 +1,7 @@
 // src/components/Scanner/ReceiptScanner.jsx
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { receiptService } from "../../services/api";
 
 const ReceiptScanner = () => {
   const videoRef = useRef(null);
@@ -126,7 +127,7 @@ const ReceiptScanner = () => {
     }
   };
 
-  const captureReceipt = () => {
+  const captureReceipt = async () => {
     if (!canvasRef.current || !videoRef.current) return;
 
     setIsScanning(true);
@@ -135,41 +136,52 @@ const ReceiptScanner = () => {
     const video = videoRef.current;
     const context = canvas.getContext("2d");
 
-    // Set canvas dimensions to match video
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    try {
+      // Set canvas dimensions to match video
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
 
-    // Draw the current video frame on the canvas
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      // Draw the current video frame on the canvas
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Get the image data as a base64 string
-    const imageData = canvas.toDataURL("image/jpeg");
+      // Pause the video to freeze the view
+      video.pause();
 
-    // Simulate receipt scanning process (would be replaced with actual OCR)
-    setTimeout(() => {
-      // For demo purposes, we'll use dummy data
-      const scannedItems = [
-        { name: "ZUCHINNI GREEN", quantity: 0.8, unit: "kg" },
-        { name: "BANANA CAVENDISH", quantity: 0.4, unit: "kg" },
-        { name: "POTATOES BRUSHED", quantity: 1.3, unit: "kg" },
-        { name: "BROCCOLI", quantity: 0.8, unit: "kg" },
-        { name: "BRUSSEL SPROUTS", quantity: 0.3, unit: "kg" },
-        { name: "GRAPES GREEN", quantity: 1.2, unit: "kg" },
-        { name: "PEAS SNOW", quantity: 0.2, unit: "kg" },
-        { name: "TOMATOES GRAPE", quantity: 1, unit: "pc" },
-        { name: "LETTUCE ICEBERG", quantity: 1, unit: "pc" },
-      ];
+      // Get the image data as a blob
+      canvas.toBlob(
+        async (blob) => {
+          try {
+            // Use our API service to scan the receipt
+            const receiptData = await receiptService.scanReceipt(blob);
 
-      setIsScanning(false);
-
-      // Navigate to the confirmation page with the scanned items
-      navigate("/scan-confirmation", {
-        state: {
-          items: scannedItems,
-          receipt: imageData,
+            // Navigate to confirmation page with the response data
+            navigate("/scan-confirmation", {
+              state: {
+                items: receiptData.items || [],
+                receipt: canvas.toDataURL("image/jpeg"),
+              },
+            });
+          } catch (apiError) {
+            console.error("Error scanning receipt:", apiError);
+            alert("Failed to process the receipt. Please try again.");
+            // Resume the video if there's an error
+            video
+              .play()
+              .catch((e) => console.error("Could not resume video:", e));
+          } finally {
+            setIsScanning(false);
+          }
         },
-      });
-    }, 2000); // Simulate scanning delay
+        "image/jpeg",
+        0.95
+      );
+    } catch (error) {
+      console.error("Error capturing receipt:", error);
+      setIsScanning(false);
+      // Resume the video if there's an error
+      video.play().catch((e) => console.error("Could not resume video:", e));
+      alert("Failed to capture the receipt image. Please try again.");
+    }
   };
 
   const handleRetry = () => {
@@ -186,7 +198,7 @@ const ReceiptScanner = () => {
         </p>
       </div>
 
-      <div className="relative flex-grow flex items-center justify-center bg-gray-900 m-4">
+      <div className="relative flex-grow flex items-center justify-center bg-gray-900">
         {error ? (
           <div className="text-center p-6">
             <div className="text-red-500 mb-4">{error}</div>
@@ -199,13 +211,24 @@ const ReceiptScanner = () => {
           </div>
         ) : (
           <>
+            {/* Video feed (shown when not scanning) */}
             <video
               ref={videoRef}
               autoPlay
               playsInline
               muted
               className="absolute w-full h-full object-cover"
-              style={{ display: isCameraActive ? "block" : "none" }}
+              style={{
+                display: isCameraActive && !isScanning ? "block" : "none",
+              }}
+            />
+
+            {/* Canvas for frozen frame (shown when scanning) */}
+            <canvas
+              ref={canvasRef}
+              className={`absolute w-full h-full object-cover ${
+                isScanning ? "block" : "hidden"
+              }`}
             />
 
             {!isCameraActive && !error && (
@@ -215,15 +238,20 @@ const ReceiptScanner = () => {
               </div>
             )}
 
+            {/* Scanning overlay */}
+            {isScanning && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="flex flex-col items-center text-white">
+                  <div className="w-12 h-12 border-2 border-white border-t-transparent rounded-full animate-spin mb-3"></div>
+                  <p className="text-lg font-medium">Processing receipt...</p>
+                </div>
+              </div>
+            )}
+
             {/* Blue receipt outline guide */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="border-4 border-blue-500 w-2/5 h-4/5 rounded-md"></div>
+              <div className="border-4 border-blue-500 lg:w-2/5 h-4/5 rounded-md"></div>
             </div>
-
-            <canvas
-              ref={canvasRef}
-              className="hidden" // Hide the canvas element
-            />
           </>
         )}
       </div>

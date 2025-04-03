@@ -106,69 +106,67 @@ const Pantry = () => {
   const [updateDate, setUpdateDate] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
 
-  useEffect(() => {
-    // Helper function to determine item status based on expiration date
-    const getItemStatus = (expirationDate) => {
-      if (!expirationDate) return "good";
+  // Helper function to determine item status based on expiration date
+  const getItemStatus = (expirationDate) => {
+    if (!expirationDate) return "good";
 
-      const expiry = new Date(expirationDate);
-      const today = new Date();
+    const expiry = new Date(expirationDate);
+    const today = new Date();
 
-      if (expiry < today) {
-        return "expired";
-      }
+    if (expiry < today) {
+      return "expired";
+    }
 
-      // If within 5 days of expiry
-      const daysUntilExpiry = Math.ceil(
-        (expiry - today) / (1000 * 60 * 60 * 24)
-      );
-      if (daysUntilExpiry <= 5) {
-        return "expiring";
-      }
+    // If within 5 days of expiry
+    const daysUntilExpiry = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
+    if (daysUntilExpiry <= 5) {
+      return "expiring";
+    }
 
-      return "good";
-    };
+    return "good";
+  };
 
-    // Calculate days until expiry
-    const getDaysUntilExpiry = (expirationDate) => {
-      const expiry = new Date(expirationDate);
-      const today = new Date();
-      return Math.max(0, Math.ceil((expiry - today) / (1000 * 60 * 60 * 24)));
-    };
+  // Calculate days until expiry
+  const getDaysUntilExpiry = (expirationDate) => {
+    const expiry = new Date(expirationDate);
+    const today = new Date();
+    return Math.max(0, Math.ceil((expiry - today) / (1000 * 60 * 60 * 24)));
+  };
 
-    const loadMockData = () => {
-      setPantryItems(MOCKDATA);
+  const loadMockData = () => {
+    setPantryItems(MOCKDATA);
+    setUpdateDate(new Date().toLocaleDateString());
+    setLoading(false);
+  };
+
+  const fetchPantryItems = async () => {
+    try {
+      setLoading(true);
+      const items = await inventoryService.getAllItems();
+      // Transform the API response to match our component's expected format
+      const transformedItems = items.map((item) => ({
+        id: item.id,
+        name: item.name,
+        quantity: item.quantity,
+        unit: item.unit,
+        selected: false,
+        status: getItemStatus(item.expiration_date),
+        expiringDays: item.expiration_date
+          ? getDaysUntilExpiry(item.expiration_date)
+          : null,
+      }));
+      setPantryItems(transformedItems);
       setUpdateDate(new Date().toLocaleDateString());
+    } catch (error) {
+      console.error("Failed to fetch pantry items:", error);
+      // If fetch fails, use mock data as fallback
+      loadMockData();
+    } finally {
       setLoading(false);
-    };
+    }
+  };
 
-    const fetchPantryItems = async () => {
-      try {
-        setLoading(true);
-        const items = await inventoryService.getAllItems();
-        // Transform the API response to match our component's expected format
-        const transformedItems = items.map((item) => ({
-          id: item.id,
-          name: item.name,
-          quantity: item.quantity,
-          unit: item.unit,
-          selected: false,
-          status: getItemStatus(item.expiration_date),
-          expiringDays: item.expiration_date
-            ? getDaysUntilExpiry(item.expiration_date)
-            : null,
-        }));
-        setPantryItems(transformedItems);
-        setUpdateDate(new Date().toLocaleDateString());
-      } catch (error) {
-        console.error("Failed to fetch pantry items:", error);
-        // If fetch fails, use mock data as fallback
-        loadMockData();
-      } finally {
-        setLoading(false);
-      }
-    };
-
+  useEffect(() => {
     fetchPantryItems();
   }, []);
 
@@ -192,6 +190,17 @@ const Pantry = () => {
           item.id === itemId ? { ...item, selected: !selected } : item
         )
       );
+    }
+  };
+
+  const handleRefresh = async () => {
+    setLoading(true);
+    try {
+      await fetchPantryItems();
+    } catch (error) {
+      console.error("Failed to refresh pantry items:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -318,7 +327,7 @@ const Pantry = () => {
               />
             </svg>
           </button>
-          <button className="p-1">
+          <button className="p-1" onClick={handleRefresh} disabled={loading}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"

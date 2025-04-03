@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Base API configuration
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "/api",
+  baseURL: process.env.REACT_APP_API_URL || "http://localhost:8000/api",
   headers: {
     "Content-Type": "application/json",
   },
@@ -142,6 +142,26 @@ export const recipeService = {
   },
 };
 
+// Receipt scanning service
+export const receiptService = {
+  scanReceipt: async (imageFile) => {
+    try {
+      const formData = new FormData();
+      formData.append("image", imageFile);
+
+      const response = await api.post("/receipts/scan_receipt/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error scanning receipt:", error);
+      throw error;
+    }
+  },
+};
+
 // User management API calls
 export const userService = {
   getAllUsers: async () => {
@@ -175,6 +195,7 @@ export const userService = {
 export default {
   authService,
   inventoryService,
+  recipeService,
   recipeService,
   userService,
 };
