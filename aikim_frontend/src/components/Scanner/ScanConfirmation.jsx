@@ -44,7 +44,8 @@ const ScanConfirmation = () => {
           name: item.name,
           quantity: item.quantity,
           unit: item.unit,
-          expiration_date: getDefaultExpirationDate(item.name),
+          expiration_date:
+            item.expiration_date || getDefaultExpirationDate(item.name),
         }));
 
       if (itemsToAdd.length > 0) {
@@ -55,11 +56,11 @@ const ScanConfirmation = () => {
       // Navigate back to the pantry page
       navigate("/");
 
-      // Show success toast/notification (would be implemented with a toast library)
-      console.log("Items added to pantry successfully");
+      // Show success notification
+      alert(`Added ${itemsToAdd.length} items to your pantry!`);
     } catch (error) {
       console.error("Error adding items to pantry:", error);
-      // Show error notification
+      alert("Failed to add items to your pantry. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

@@ -39,6 +39,7 @@ pip install -r requirements.txt
 ```
 
 > Make sure `requirements.txt` includes:
+
 ```txt
 Django>=4.2
 djangorestframework
@@ -87,8 +88,9 @@ Your backend will be live at:
 
 ---
 
-##  8. Testing API Endpoints
+## 8. Testing API Endpoints
 
 You can test the API using:
--  [Postman Team link]([url](https://app.getpostman.com/join-team?invite_code=b2acf93e9c703d46813a8a1eb9e1fcd62226de8945677bc4ea61937e60db9748))
--  `curl` from the terminal
+
+- [Postman Team link](<[url](https://app.getpostman.com/join-team?invite_code=b2acf93e9c703d46813a8a1eb9e1fcd62226de8945677bc4ea61937e60db9748)>)
+- `curl` from the terminal
